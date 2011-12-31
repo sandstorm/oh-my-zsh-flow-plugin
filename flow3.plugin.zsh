@@ -97,7 +97,7 @@ f3functionaltest() {
   done
   local flow3BaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/FunctionalTests.xml --colors $@}
+  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/FunctionalTests.xml --colors $@
 }
 
 compdef _flow3 flow3
