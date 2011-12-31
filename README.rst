@@ -18,9 +18,24 @@ Then, install this repository inside ``custom/plugins`` of your oh-my-zsh direct
 Usage
 =====
 
+Here, the features of the FLOW3 helper are explained:
+
+flow3 Command
+-------------
+
 The FLOW3 plugin makes the ``flow3`` command available *inside every subdirectory* of the FLOW3
 distribution. Thus, you can use ``flow3`` instead of ``./flow3``, and you do not have to be in
-the base directory of your distribution for it.
+the base directory of your distribution for it. Example::
+
+	cd <YourFlow3Distribution>
+	./flow3 help    # this is the command you know already ;-)
+	flow3 help      # shortcut to the one above, saves you two keystrokes -- yeah!
+	cd Packages/Framework/TYPO3.FLOW3
+	flow3 help      # now, that's actually quite cool, as the system will find the correct
+	                # flow3 CLI executable by traversing the parent directories
+
+Tab Completion
+--------------
 
 You can use *tab completion* on the flow3 subcommands, and the system will intelligently auto-
 complete it. When autocompleting a fully written command, the full command reference is displayed::
@@ -30,16 +45,32 @@ complete it. When autocompleting a fully written command, the full command refer
 	flow3 kickstart:<TAB>                  # show all commands starting with "kickstart:"
 	flow3 kickstart:actioncontroller <TAB> # show the full help for kickstart:actioncontroller from FLOW3
 
+Unit and Functional Testing
+---------------------------
 
-*f3unittest* TODO
+In order to save a few keystrokes when typing ``phpunit -c ..../Build/Common/PhpUnit/UnitTests.xml path/to/MyTest.php``,
+there are two commands available: ``f3functionaltest`` and ``f3unittest``.
 
-*f3functionaltest* TODO
+They, as well, can be called inside every subfolder of the FLOW3 distribution::
+
+	cd <YourFlow3Distribution>
+	f3unittest Packages/Framework/TYPO3.FLOW3/Tests/Unit       # Runs all unit tests; lot of typing necessary
+	cd Packages/Framework/TYPO3.FLOW3/
+	f3unittest Tests/Unit                                      # runs all unit tests, but with a lot less typing ;-)
+	f3functionaltest Tests/Functional                          # runs the functional tests
 
 Internals
 =========
 
 The system caches temporary files inside `Data/Temporary/Development/.flow3-autocompletion*` in
 order to not invoke ./flow3 too often (to improve performance).
+
+Future Ideas
+============
+
+If you have suggestions on how to improve this software, pull requests etc are highly appreciated :-)
+
+Or you can contact me directly as well, I usually hang out as ``skurfuerst`` in ``irc.freenode.net #flow3``.
 
 License
 =======
