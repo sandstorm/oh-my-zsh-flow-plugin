@@ -1,3 +1,10 @@
+######################################
+# Section: FLOW3 Autocompletion Helper
+######################################
+
+#
+# the ZSH autocompletion function for FLOW3 (main entry point)
+#
 _flow3() {
   if _flow3_is_inside_base_distribution; then
 
@@ -17,7 +24,12 @@ _flow3() {
     cd $startDirectory
   fi
 }
+compdef _flow3 flow3
 
+#
+# Autocompletion function for the main commands. Is executed
+# from the root of the FLOW3 distribution.
+#
 _flow3_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow3-autocompletion-maincommands ]; then
     ./flow3 help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow3-autocompletion-maincommands
@@ -29,6 +41,10 @@ _flow3_main_commands() {
   _describe 'flow3 command' cmdlist
 }
 
+#
+# Autocompletion function for a single commands. Is executed
+# from the root of the FLOW3 distribution.
+#
 _flow3_subcommand() {
   if [ ! -f Data/Temporary/Development/.flow3-autocompletion-command-$cmd ]; then
     ./flow3 help $cmd > Data/Temporary/Development/.flow3-autocompletion-command-$cmd
@@ -37,6 +53,15 @@ _flow3_subcommand() {
   compadd -x "`cat Data/Temporary/Development/.flow3-autocompletion-command-$cmd`"
 }
 
+######################################
+# Section: Internal Utility Functions
+######################################
+
+#
+# Returns 0 if INSIDE a FLOW3 distribution, and 1 otherwise.
+# can be used like:
+#     if _flow3_is_inside_base_distribution; then ... ;fi
+#
 _flow3_is_inside_base_distribution() {
   local startDirectory=`pwd`
   while [[ ! -f flow3 ]]; do
@@ -51,8 +76,15 @@ _flow3_is_inside_base_distribution() {
   return 0
 }
 
-# FLOW3 command which can be executed inside sub directories of
-# the FLOW3 distribution
+######################################
+# Section: FLOW3 Command from subdir
+######################################
+
+#
+# Implementation of a FLOW3 command which can be executed inside
+# sub directories of the FLOW3 distribution; just finds the base
+# distribution directory and calls the appropriate FLOW3 command
+#
 flow3() {
   if _flow3_is_inside_base_distribution; then
   else
@@ -68,6 +100,13 @@ flow3() {
   cd $startDirectory
 }
 
+######################################
+# Section: Unit / Functional Test
+######################################
+
+#
+# Implementation of a command to run unit tests
+#
 f3unittest() {
   if _flow3_is_inside_base_distribution; then
   else
@@ -84,6 +123,9 @@ f3unittest() {
   phpunit -c $flow3BaseDir/Build/Common/PhpUnit/UnitTests.xml --colors $@
 }
 
+#
+# Implementation of a command to run functional tests
+#
 f3functionaltest() {
   if _flow3_is_inside_base_distribution; then
   else
@@ -100,4 +142,56 @@ f3functionaltest() {
   phpunit -c $flow3BaseDir/Build/Common/PhpUnit/FunctionalTests.xml --colors $@
 }
 
-compdef _flow3 flow3
+######################################
+# Section: FLOW3 Distribution maintenance helpers
+######################################
+
+#
+# Utility to choose the current FLOW3 distribution. Sets cdpath correctly,
+# such that packages inside a distribution are found automatically.
+#
+f3-set-distribution() {
+  echo "Enter the FLOW3 distribution path number which should be active currently!"
+  echo "--------------------------------------------------------------------------"
+  local i=1
+  for thePath in $flow3_distribution_paths; do
+    echo -n $i
+    echo -n "  "
+    echo $thePath
+    i=` expr $i + 1`
+  done
+  echo -n "Your Choice: "
+  read choice
+  echo $flow3_distribution_paths[$choice] > $ZSH/custom/plugins/flow3/f3-environment-choice.txt
+
+  # Now, after updating f3-environment-choice.txt, send USR2 signal to
+  # all running ZSH instances such that they reload
+  ps xwwo pid,command | grep -v login | while read pid command; do
+    if echo $command | egrep -- "(bin/|-)zsh" >/dev/null; then
+      kill -USR2 $pid
+    fi
+  done
+}
+
+#
+# Callback being executed when USR2 signal is fired
+#
+TRAPUSR2() {
+  _f3-update-distribution-path
+}
+
+#
+# Internal helper to update cdpath
+#
+_f3-update-distribution-path() {
+  if [ -f $ZSH/custom/plugins/flow3/f3-environment-choice.txt ]; then
+  else
+    return
+  fi
+  local f3BasePath=`cat $ZSH/custom/plugins/flow3/f3-environment-choice.txt`
+  cdpath=($f3BasePath/Packages/Framework/ $f3BasePath/Packages/Application/ $f3BasePath/Packages/Sites/)
+  export CDPATH
+}
+
+# This helper needs to be run initially to set the CDPath correctly
+_f3-update-distribution-path

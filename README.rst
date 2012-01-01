@@ -59,6 +59,31 @@ They, as well, can be called inside every subfolder of the FLOW3 distribution::
 	f3unittest Tests/Unit                                      # runs all unit tests, but with a lot less typing ;-)
 	f3functionaltest Tests/Functional                          # runs the functional tests
 
+Directly accessing FLOW3 Packages using cd
+------------------------------------------
+
+Often, I find myself working for longer timespans in a particular FLOW3 distribution, jumping between
+the different packages of the distribution very often. In order to save some keystrokes, I found the "cdpath"
+variable in ZSH, which can be defined like::
+
+	cdpath=(/..../FLOW3Base/Packages/Framework /..../FLOW3Base/Packages/Application)
+
+Then, you can directly ``cd`` into *any subdirectory* of the directories in ``cdpath``.
+This enables you to directly jump to all packages inside the distribution::
+
+	cd TYPO3.FLOW3
+	cd SandstormMedia.Plumber
+
+In order to work with multiple distributions more easily, you should set the ``flow3_distribution_paths``
+variable inside your .zshrc to the base directories of all distributions::
+
+	flow3_distribution_paths=(/Volumes/data/htdocs/FLOW3Base /Volumes/data/htdocs/Flow3Org /Volumes/data/htdocs/PackageRepositoryDistribution /Volumes/data/htdocs/SandstormMediaFlow3Distribution)
+
+Then, you can use the ``f3-set-distribution`` command to choose which distribution shall be *active*
+right now.
+
+The system automatically updates the ``cdpath`` *in ALL running zsh instances* :-)
+
 Internals
 =========
 
