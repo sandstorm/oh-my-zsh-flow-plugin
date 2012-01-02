@@ -1,7 +1,7 @@
 ==========================
 FLOW3 Helper for Oh-my-ZSH
 ==========================
-(c) 2012 Sebastian Kurfürst, sandstorm|media
+Copyright 2012 Sebastian Kurfürst, sandstorm|media
 
 Installation
 ============
@@ -14,6 +14,7 @@ Then, install this repository inside ``custom/plugins`` of your oh-my-zsh direct
 	cd .oh-my-zsh/custom/plugins
 	git clone git://github.com/sandstorm/oh-my-zsh-flow3-plugin.git flow3
 
+Afterwards, add the ``flow3`` plugin to your oh-my-zsh config list.
 
 Usage
 =====
