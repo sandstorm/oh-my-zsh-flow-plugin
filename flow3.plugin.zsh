@@ -32,6 +32,7 @@ compdef _flow3 flow3
 #
 _flow3_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow3-autocompletion-maincommands ]; then
+    mkdir -p Data/Temporary/Development/
     ./flow3 help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow3-autocompletion-maincommands
   fi
 
