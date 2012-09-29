@@ -121,7 +121,7 @@ f3unittest() {
   done
   local flow3BaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/UnitTests.xml --colors $@
+  phpunit -c $flow3BaseDir/Build/buildessentials/PhpUnit/UnitTests.xml --colors $@
 }
 
 #
@@ -140,7 +140,7 @@ f3functionaltest() {
   done
   local flow3BaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/FunctionalTests.xml --colors $@
+  phpunit -c $flow3BaseDir/Build/buildessentials/PhpUnit/FunctionalTests.xml --colors $@
 }
 
 ######################################
