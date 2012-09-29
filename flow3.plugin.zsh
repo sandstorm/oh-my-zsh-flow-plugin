@@ -190,7 +190,9 @@ _f3-update-distribution-path() {
     return
   fi
   local f3BasePath=`cat $ZSH/custom/plugins/flow3/f3-environment-choice.txt`
-  cdpath=($f3BasePath/Packages/Framework/ $f3BasePath/Packages/Application/ $f3BasePath/Packages/Sites/)
+
+  # we need to add "." to the current CDPath, else Composer etc breaks...
+  cdpath=(. $f3BasePath/Packages/Framework/ $f3BasePath/Packages/Application/ $f3BasePath/Packages/Sites/)
   export CDPATH
 }
 
