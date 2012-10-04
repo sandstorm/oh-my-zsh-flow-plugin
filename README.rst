@@ -49,7 +49,7 @@ complete it. When autocompleting a fully written command, the full command refer
 Unit and Functional Testing
 ---------------------------
 
-In order to save a few keystrokes when typing ``phpunit -c ..../Build/Common/PhpUnit/UnitTests.xml path/to/MyTest.php``,
+In order to save a few keystrokes when typing ``phpunit -c .../Build/.../PhpUnit/UnitTests.xml path/to/MyTest.php``,
 there are two commands available: ``f3functionaltest`` and ``f3unittest``.
 
 They, as well, can be called inside every subfolder of the FLOW3 distribution::
