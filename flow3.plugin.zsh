@@ -1,5 +1,155 @@
 ######################################
-# Section: FLOW3 Autocompletion Helper
+# Section: TYPO3 Flow Autocompletion Helper
+######################################
+
+#
+# the ZSH autocompletion function for TYPO3 Flow (main entry point)
+#
+_flow() {
+  if _flow_is_inside_base_distribution; then
+
+    local startDirectory=`pwd`
+    while [ ! -f flow ]; do
+      cd ..
+    done
+    if (( $CURRENT > 2 )); then
+      CURRENT=$CURRENT-1
+      local cmd=${words[2]}
+      shift words
+
+      _flow_subcommand
+    else
+      _flow_main_commands
+    fi
+    cd $startDirectory
+  fi
+}
+compdef _flow flow
+
+#
+# Autocompletion function for the main commands. Is executed
+# from the root of the FLOW3 distribution.
+#
+_flow_main_commands() {
+  if [ ! -f Data/Temporary/Development/.flow-autocompletion-maincommands ]; then
+    mkdir -p Data/Temporary/Development/
+    ./flow help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
+  fi
+
+  # fills up cmdlist variable
+  eval "`cat Data/Temporary/Development/.flow-autocompletion-maincommands`"
+
+  _describe 'flow command' cmdlist
+}
+
+#
+# Autocompletion function for a single commands. Is executed
+# from the root of the TYPO3 Flow distribution.
+#
+_flow_subcommand() {
+  if [ ! -f Data/Temporary/Development/.flow-autocompletion-command-$cmd ]; then
+    ./flow help $cmd > Data/Temporary/Development/.flow-autocompletion-command-$cmd
+  fi
+
+  compadd -x "`cat Data/Temporary/Development/.flow-autocompletion-command-$cmd`"
+}
+
+######################################
+# Section: Internal Utility Functions
+######################################
+
+#
+# Returns 0 if INSIDE a FLOW3 distribution, and 1 otherwise.
+# can be used like:
+#     if _flow3_is_inside_base_distribution; then ... ;fi
+#
+_flow_is_inside_base_distribution() {
+  local startDirectory=`pwd`
+  while [[ ! -f flow ]]; do
+
+    if [[ `pwd` == "/" ]]; then
+      cd $startDirectory
+      return 1
+    fi
+    cd ..
+  done
+  cd $startDirectory
+  return 0
+}
+
+######################################
+# Section: FLOW3 Command from subdir
+######################################
+
+#
+# Implementation of a FLOW3 command which can be executed inside
+# sub directories of the FLOW3 distribution; just finds the base
+# distribution directory and calls the appropriate FLOW3 command
+#
+flow() {
+  if _flow_is_inside_base_distribution; then
+  else
+    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    return 1
+  fi
+
+  local startDirectory=`pwd`
+  while [ ! -f flow ]; do
+    cd ..
+  done
+  ./flow $@
+  cd $startDirectory
+}
+
+######################################
+# Section: Unit / Functional Test
+######################################
+
+#
+# Implementation of a command to run unit tests
+#
+funittest() {
+  if _flow_is_inside_base_distribution; then
+  else
+    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    return 1
+  fi
+
+  local startDirectory=`pwd`
+  while [ ! -f flow ]; do
+    cd ..
+  done
+  local flowBaseDir=`pwd`
+  cd $startDirectory
+  phpunit -c $flowBaseDir/Build/buildessentials/PhpUnit/UnitTests.xml --colors $@
+}
+
+#
+# Implementation of a command to run functional tests
+#
+ffunctionaltest() {
+  if _flow_is_inside_base_distribution; then
+  else
+    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    return 1
+  fi
+
+  local startDirectory=`pwd`
+  while [ ! -f flow ]; do
+    cd ..
+  done
+  local flowBaseDir=`pwd`
+  cd $startDirectory
+  phpunit -c $flowBaseDir/Build/buildessentials/PhpUnit/FunctionalTests.xml --colors $@
+}
+
+##################################################################################################
+##################################################################################################
+
+
+
+######################################
+# Section: FLOW3 Autocompletion Helper (deprecated)
 ######################################
 
 #
@@ -121,7 +271,7 @@ f3unittest() {
   done
   local flow3BaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/buildessentials/PhpUnit/UnitTests.xml --colors $@
+  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/UnitTests.xml --colors $@
 }
 
 #
@@ -140,7 +290,7 @@ f3functionaltest() {
   done
   local flow3BaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/buildessentials/PhpUnit/FunctionalTests.xml --colors $@
+  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/FunctionalTests.xml --colors $@
 }
 
 ######################################
@@ -151,8 +301,8 @@ f3functionaltest() {
 # Utility to choose the current FLOW3 distribution. Sets cdpath correctly,
 # such that packages inside a distribution are found automatically.
 #
-f3-set-distribution() {
-  echo "Enter the FLOW3 distribution path number which should be active currently!"
+f-set-distribution() {
+  echo "Enter the TYPO3 Flow distribution path number which should be active currently!"
   echo "--------------------------------------------------------------------------"
   local i=1
   for thePath in $flow3_distribution_paths; do
