@@ -353,20 +353,20 @@ _f3-update-distribution-path
 # Section: Open FLOW3 Log in iTerm 2
 ######################################
 
-f3logs() {
-  if _flow3_is_inside_base_distribution; then
+flogs() {
+  if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: FLOW3 not found inside a parent of current directory"
+    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
 
   local startDirectory=`pwd`
-  while [ ! -f flow3 ]; do
+  while [ ! -f flow ]; do
     cd ..
   done
-  local flow3BaseDir=`pwd`
+  local flowBaseDir=`pwd`
   cd $startDirectory
 
-  flow3_path="$flow3BaseDir" osascript $ZSH/custom/plugins/flow3/flow3log.applescript
+  flow3_path="$flowBaseDir" osascript $ZSH/custom/plugins/flow3/flow3log.applescript
 
 }
