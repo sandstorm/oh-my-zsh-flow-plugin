@@ -121,7 +121,7 @@ funittest() {
   done
   local flowBaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flowBaseDir/Build/buildessentials/PhpUnit/UnitTests.xml --colors $@
+  phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $@
 }
 
 #
@@ -140,7 +140,7 @@ ffunctionaltest() {
   done
   local flowBaseDir=`pwd`
   cd $startDirectory
-  phpunit -c $flowBaseDir/Build/buildessentials/PhpUnit/FunctionalTests.xml --colors $@
+  phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
 }
 
 ##################################################################################################
