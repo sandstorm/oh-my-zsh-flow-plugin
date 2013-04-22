@@ -1,10 +1,10 @@
 <?php
 
-$flow3Help = file_get_contents('php://stdin');
-$flow3Help = str_replace('* ', '  ', $flow3Help);
+$flowhelp = file_get_contents('php://stdin');
+$flowhelp = str_replace('* ', '  ', $flowhelp);
 
 $results = array();
-foreach (preg_split('/^  (?=\w)/m', $flow3Help) as $singleLine) {
+foreach (preg_split('/^  (?=\w)/m', $flowhelp) as $singleLine) {
 	if (strlen(trim($singleLine)) === 0) continue;
 		// Collapse superfluous whitespace
 	$singleLine = preg_replace('/\s+/', ' ', $singleLine);

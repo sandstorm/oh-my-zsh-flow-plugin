@@ -33,7 +33,7 @@ compdef _flow flow
 _flow_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow-autocompletion-maincommands ]; then
     mkdir -p Data/Temporary/Development/
-    ./flow help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
+    ./flow help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
   fi
 
   # fills up cmdlist variable
@@ -120,8 +120,13 @@ funittest() {
     cd ..
   done
   local flowBaseDir=`pwd`
+  local phpunit="phpunit"
+  if [ -f bin/phpunit ]
+  	local phpunit="$flowBaseDir/bin/phpunit"
+
   cd $startDirectory
-  phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $@
+
+  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $@
 }
 
 #
@@ -139,8 +144,13 @@ ffunctionaltest() {
     cd ..
   done
   local flowBaseDir=`pwd`
+  local phpunit="phpunit"
+  if [ -f bin/phpunit ]
+  	local phpunit="$flowBaseDir/bin/phpunit"
+
   cd $startDirectory
-  phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
+
+  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
 }
 
 ##################################################################################################
@@ -305,7 +315,7 @@ f-set-distribution() {
   echo "Enter the TYPO3 Flow distribution path number which should be active currently!"
   echo "--------------------------------------------------------------------------"
   local i=1
-  for thePath in $flow3_distribution_paths; do
+  for thePath in $flow_distribution_paths; do
     echo -n $i
     echo -n "  "
     echo $thePath
@@ -313,9 +323,9 @@ f-set-distribution() {
   done
   echo -n "Your Choice: "
   read choice
-  echo $flow3_distribution_paths[$choice] > $ZSH/custom/plugins/flow3/f3-environment-choice.txt
+  echo $flow_distribution_paths[$choice] > $ZSH/custom/plugins/flow3/f-environment-choice.txt
 
-  # Now, after updating f3-environment-choice.txt, send USR2 signal to
+  # Now, after updating f-environment-choice.txt, send USR2 signal to
   # all running ZSH instances such that they reload
   ps xwwo pid,command | grep -v login | while read pid command; do
     if echo $command | egrep -- "(bin/|-)zsh" >/dev/null; then
@@ -328,26 +338,26 @@ f-set-distribution() {
 # Callback being executed when USR2 signal is fired
 #
 TRAPUSR2() {
-  _f3-update-distribution-path
+  _f-update-distribution-path
 }
 
 #
 # Internal helper to update cdpath
 #
-_f3-update-distribution-path() {
-  if [ -f $ZSH/custom/plugins/flow3/f3-environment-choice.txt ]; then
+_f-update-distribution-path() {
+  if [ -f $ZSH/custom/plugins/flow3/f-environment-choice.txt ]; then
   else
     return
   fi
-  local f3BasePath=`cat $ZSH/custom/plugins/flow3/f3-environment-choice.txt`
+  local fBasePath=`cat $ZSH/custom/plugins/flow/f-environment-choice.txt`
 
   # we need to add "." to the current CDPath, else Composer etc breaks...
-  cdpath=(. $f3BasePath/Packages/Framework/ $f3BasePath/Packages/Application/ $f3BasePath/Packages/Sites/)
+  cdpath=(. $fBasePath/Packages/Framework/ $fBasePath/Packages/Application/ $fBasePath/Packages/Sites/)
   export CDPATH
 }
 
 # This helper needs to be run initially to set the CDPath correctly
-_f3-update-distribution-path
+_f-update-distribution-path
 
 ######################################
 # Section: Open FLOW3 Log in iTerm 2
