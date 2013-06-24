@@ -88,6 +88,22 @@ right now.
 
 The system automatically updates the ``cdpath`` *in ALL running zsh instances* :-)
 
+
+f-package-foreach
+-----------------
+
+Often, I need to run some command in all packages. Before using composer,
+this was easy using ``git submodule foreach``. This is why we install
+``f-package-foreach`` which loops through all TYPO3 Flow packages; skipping
+all ``Packages/Libraries``.
+
+Usage:
+
+``f-package-foreach <your-command>``
+
+This command can be run from any subdirectory inside the current Flow
+distribution, and will always loop through all packages.
+
 Internals
 =========
 

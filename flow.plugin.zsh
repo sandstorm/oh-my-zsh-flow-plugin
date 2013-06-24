@@ -153,6 +153,43 @@ ffunctionaltest() {
   $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
 }
 
+######################################
+# Section: f-package-foreach
+######################################
+
+f-package-foreach() {
+  if _flow_is_inside_base_distribution; then
+  else
+    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    return 1
+  fi
+
+  local startDirectory=`pwd`
+  while [ ! -f flow ]; do
+    cd ..
+  done
+
+  local flowBaseDir=`pwd`
+
+  command=$*
+  baseDirectory=`pwd`
+  for directory in `composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
+  do
+    cd "$directory"
+
+    echo ''
+    echo '--------------------------------------------'
+    echo $directory
+    echo '--------------------------------------------'
+    eval $command
+
+    cd "$baseDirectory"
+  done
+
+  cd $startDirectory
+
+}
+
 ##################################################################################################
 ##################################################################################################
 
