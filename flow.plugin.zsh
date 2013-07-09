@@ -59,9 +59,9 @@ _flow_subcommand() {
 ######################################
 
 #
-# Returns 0 if INSIDE a FLOW3 distribution, and 1 otherwise.
+# Returns 0 if INSIDE a Flow distribution, and 1 otherwise.
 # can be used like:
-#     if _flow3_is_inside_base_distribution; then ... ;fi
+#     if _flow_is_inside_base_distribution; then ... ;fi
 #
 _flow_is_inside_base_distribution() {
   local startDirectory=`pwd`
@@ -78,7 +78,7 @@ _flow_is_inside_base_distribution() {
 }
 
 ######################################
-# Section: FLOW3 Command from subdir
+# Section: Flow Command from subdir
 ######################################
 
 #
@@ -429,7 +429,7 @@ _f-update-distribution-path() {
 _f-update-distribution-path
 
 ######################################
-# Section: Open FLOW3 Log in iTerm 2
+# Section: Open Flow Log in iTerm 2
 ######################################
 
 flogs() {
@@ -446,6 +446,6 @@ flogs() {
   local flowBaseDir=`pwd`
   cd $startDirectory
 
-  flow3_path="$flowBaseDir" osascript $ZSH/custom/plugins/flow3/flow3log.applescript
+  flow_path="$flowBaseDir" osascript $ZSH/custom/plugins/flow/flowlog.applescript
 
 }
