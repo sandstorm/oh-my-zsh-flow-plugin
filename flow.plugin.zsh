@@ -154,6 +154,38 @@ ffunctionaltest() {
 }
 
 ######################################
+# Section: Behat (Behavioral) Tests
+######################################
+fbehattest() {
+  if _flow_is_inside_base_distribution; then
+  else
+    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    return 1
+  fi
+
+  local startDirectory=`pwd`
+  while [ ! -f flow ]; do
+    cd ..
+  done
+  local flowBaseDir=`pwd`
+
+  if [ ! -f bin/behat ]; then
+    echo "Behat not found, downloading flowpack/behat"
+    composer require --dev --prefer-source --no-interaction flowpack/behat dev-master
+    rm -Rf Data/Temporary
+    rm -Rf Build/Behat
+    echo "Setting up Behat..."
+    ./flow behat:setup
+  fi
+
+  cd $startDirectory
+
+  $flowBaseDir/bin/behat -c $@
+}
+
+
+
+######################################
 # Section: f-package-foreach
 ######################################
 
