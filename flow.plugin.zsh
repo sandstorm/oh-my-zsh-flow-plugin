@@ -33,7 +33,7 @@ compdef _flow flow
 _flow_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow-autocompletion-maincommands ]; then
     mkdir -p Data/Temporary/Development/
-    ./flow help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
+    ./flow help | grep  "^[* ][ ][[:alnum:][:space:]]" | php $ZSH/custom/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
   fi
 
   # fills up cmdlist variable
@@ -87,8 +87,7 @@ _flow_is_inside_base_distribution() {
 # distribution directory and calls the appropriate TYPO3 Flow command
 #
 flow() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -109,8 +108,7 @@ flow() {
 # Implementation of a command to run unit tests
 #
 funittest() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -133,8 +131,7 @@ funittest() {
 # Implementation of a command to run functional tests
 #
 ffunctionaltest() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -158,8 +155,7 @@ ffunctionaltest() {
 ##############################
 
 f-package-foreach() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -232,8 +228,7 @@ TRAPUSR2() {
 # Internal helper to update cdpath
 #
 _f-update-distribution-path() {
-  if [ -f $ZSH/custom/plugins/flow/f-environment-choice.txt ]; then
-  else
+  if [ ! -f $ZSH/custom/plugins/flow/f-environment-choice.txt ]; then
     return
   fi
   local fBasePath=`cat $ZSH/custom/plugins/flow/f-environment-choice.txt`
@@ -251,8 +246,7 @@ _f-update-distribution-path
 ######################################
 
 flogs() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
