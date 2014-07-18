@@ -85,6 +85,17 @@ Though all of the examples above use ":", remember you can use either ":" or "/"
 
 It would be awesome to make tab completion work with this, but, that's not done yet.
 
+Behat Testing
+-------------
+
+Just as you can run unit and functional tests, you can run ``fbehattest <behat.yml>`` which will run ``bin/behat -c <behat.yml>``.::
+
+	cd <YourFlowDistribution>
+	# The command you run                      # what it expands to
+	fbehattest P:TYPO3.Flow:behat.yml          # Packages/Framework/TYPO3.Flow/Tests/Behavior/behat.yml
+	# Or use the full path
+	fbehattest Packages/Framework/TYPO3.Flow/Tests/Behavior/behat.yml
+
 Directly accessing TYPO3 Flow Packages using cd
 -----------------------------------------------
 

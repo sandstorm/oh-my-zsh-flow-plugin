@@ -232,7 +232,10 @@ fbehattest() {
 
   cd $startDirectory
 
-  $flowBaseDir/bin/behat -c $@
+  # bin/behat -c Packages/Application/My.Package/Tests/Behavior/behat.yml
+	# P:TYPO3.Flow:behat.yml.dist
+  tests=$(_flow_package_dir_expansion $flowBaseDir "Tests/Behavior" $@)
+  $flowBaseDir/bin/behat -c $tests
 }
 
 
