@@ -77,6 +77,59 @@ _flow_is_inside_base_distribution() {
   return 0
 }
 
+#
+# Get the list of packages directories.
+# This expects to be run from the flow base distribution's root directory
+# Includes trailing slash.
+#
+_flow_list_packages() {
+  local flowBaseDir=$1
+  #composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages
+  find $flowBaseDir -name "composer.json" -type f | grep -v "Packages/Libraries" | grep "Packages" | sed -e "s_composer.json__g"
+}
+
+#
+# Expands a package directory for in all parameters starting with $3.
+# $1 defines the a folder within the package directory that should be
+# included after the package directory, but before the rest. For example:
+#      var=$(_flow_package_dir_expansion $flowBaseDir Tests/Unit P/TYPO3.Flow/Cli)
+#      var=$(_flow_package_dir_expansion $flowBaseDir Tests/Unit P:TYPO3.Flow:Cli)
+#        echoes <flowBaseDir>/Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+#      var=$(_flow_package_dir_expansion $flowBaseDir Tests/Unit P:TYPO3.Flow)
+#        echoes <flowBaseDir>/Packages/Framework/TYPO3.Flow/Tests/Unit
+#
+_flow_package_dir_expansion() {
+  local expandedDirs
+  local packageDir
+  local flowBaseDir=${1%%/} #remove trailing slash(es)
+  local dirInPkg=${2##/}    #remove initial slash(es)
+  dirInPkg=${dirInPkg%%/}   #remove trailing slash(es)
+  shift
+  shift
+
+  for entry in $@; do
+    if [[ ${entry:0:2} == "P/" ]] || [[ ${entry:0:2} == "P:" ]]; then
+      # Assume that the package key does not have / or : in it.
+
+      entry=${entry:2} # remove "P/" or "P:"
+      if [[ ! $entry == *:* ]]; then
+        entry=${entry/\//:} # replace first / with :
+        if [[ ! $entry == *:* ]]; then
+          entry=${entry}: # must be only a package name
+        fi
+      fi
+      # now everything before the first : is the name of the package.
+      packageDir=$(_flow_list_packages $flowBaseDir | grep -i /${entry%%:*}/)
+
+      # packageDir includes a trailing slash! dirInPkg doesn't.
+      entry=${packageDir}${dirInPkg}/${entry##*:}
+    fi
+    expandedDirs+=" $entry"
+  done
+
+  echo ${expandedDirs# } #remove initial space
+}
+
 ###########################################
 # Section: TYPO3 Flow Command from subdir #
 ###########################################
@@ -124,7 +177,8 @@ funittest() {
 
   cd $startDirectory
 
-  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $@
+  tests=$(_flow_package_dir_expansion $flowBaseDir "Tests/Unit" $@)
+  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $tests
 }
 
 #
@@ -147,7 +201,8 @@ ffunctionaltest() {
 
   cd $startDirectory
 
-  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
+  tests=$(_flow_package_dir_expansion $flowBaseDir "Tests/Functional" $@)
+  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $tests
 }
 
 ##############################
@@ -169,7 +224,8 @@ f-package-foreach() {
 
   command=$*
   baseDirectory=`pwd`
-  for directory in `composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
+  #for directory in `composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
+  for directory in $(_flow_list_packages $flowBaseDir)
   do
     cd "$directory"
 
