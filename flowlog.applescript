@@ -1,6 +1,6 @@
 -- iTerm launching script for samo9789
 
-set flow3_path to system attribute "flow3_path"
+set flow_path to system attribute "flow_path"
 
 
 launch "iTerm"
@@ -16,14 +16,14 @@ tell application "iTerm"
 
 		tell the last session
 			set name to "SystemLog"
-			write text "tail -f " & flow3_path & "/Data/Logs/System_Development.log"
+			write text "tail -f " & flow_path & "/Data/Logs/System_Development.log"
 		end tell
 
 		tell i term application "System Events" to keystroke "d" using command down
 
 		tell the last session
 			set name to "SecurityLog"
-			write text "tail -f " & flow3_path & "/Data/Logs/Security_Development.log"
+			write text "tail -f " & flow_path & "/Data/Logs/Security_Development.log"
 		end tell
 
 	end tell

@@ -12,7 +12,7 @@ Then, install this repository inside ``custom/plugins`` of your oh-my-zsh direct
 
 	mkdir -p .oh-my-zsh/custom/plugins
 	cd .oh-my-zsh/custom/plugins
-	git clone git://github.com/sandstorm/oh-my-zsh-flow3-plugin.git flow
+	git clone git://github.com/visay/oh-my-zsh-typo3-flow-plugin.git flow
 
 Afterwards, add the ``flow`` plugin to your oh-my-zsh config list.
 
@@ -33,10 +33,9 @@ the base directory of your distribution for it. Example::
 	flow help      # shortcut to the one above, saves you two keystrokes -- yeah!
 	cd Packages/Framework/TYPO3.Flow
 	flow help      # now, that's actually quite cool, as the system will find the correct
-	                # flow CLI executable by traversing the parent directories
+	               # flow CLI executable by traversing the parent directories
 
-NOTE: For Backwards Compatibility, the "flow3" command is still supported for
-pre-2.0 instances.
+NOTE: The "flow3" command is not supported anymore.
 
 Tab Completion
 --------------
@@ -47,21 +46,44 @@ complete it. When autocompleting a fully written command, the full command refer
 	flow <TAB>                            # list all currently installed commands with a short description
 	flow k<TAB>                           # autocompletes to "kickstart:"
 	flow kickstart:<TAB>                  # show all commands starting with "kickstart:"
+	flow kickstart:a<TAB>                 # autocompletes to "kickstart:actioncontroller"
 	flow kickstart:actioncontroller <TAB> # show the full help for kickstart:actioncontroller from TYPO3 Flow
 
 Unit and Functional Testing
 ---------------------------
 
-In order to save a few keystrokes when typing ``phpunit -c ..../Build/Common/PhpUnit/UnitTests.xml path/to/MyTest.php``,
+In order to save a few keystrokes when typing ``phpunit -c ..../Build/BuildEssentials/PhpUnit/UnitTests.xml path/to/MyTest.php``,
 there are two commands available: ``ffunctionaltest`` and ``funittest``.
 
-They, as well, can be called inside every subfolder of the FLOW3 distribution::
+They, as well, can be called inside every subfolder of the TYPO3 Flow distribution::
 
 	cd <YourFlowDistribution>
 	funittest Packages/Framework/TYPO3.Flow/Tests/Unit       # Runs all unit tests; lot of typing necessary
 	cd Packages/Framework/TYPO3.Flow/
 	funittest Tests/Unit                                      # runs all unit tests, but with a lot less typing ;-)
 	ffunctionaltest Tests/Functional                          # runs the functional tests
+
+To save even more typing, you can use package expansion in both ``ffunctionaltest`` and ``funittest``. Anything that starts with ``P:`` or ``P/`` will be expanded (think of this as shorthand for the Packages/* folder). With expansion the ``Tests/Unit`` and ``Tests/Functional`` directories should not be included. The general format of package expansion is ``P:<package-key>:<what-to-test>``. You may use either ":" or "/" around the package key (or any combination of the two). For example::
+
+	cd <YourFlowDistribution>
+	# The command you run                      # what it expands to
+	funittest P:TYPO3.Flow                     # Packages/Framework/TYPO3.Flow/Tests/Unit
+	funittest P:TYPO3.Flow:Cli                 # Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+	funittest P:TYPO3.Flow:Cli/CommandTest.php # Packages/Framework/TYPO3.Flow/Tests/Unit/Cli/CommandTest.php
+	
+	ffunctionaltest P:TYPO3.Flow               # Packages/Framework/TYPO3.Flow/Tests/Functional
+	ffunctionaltest P:TYPO3.Flow:Mvc           # Packages/Framework/TYPO3.Flow/Tests/Functional/Mvc
+
+Though all of the examples above use ":", remember you can use either ":" or "/", or even a combination. For example, these will all expand to "Packages/Framework/TYPO3.Flow/Tests/Unit/Cli"::
+
+	cd <YourFlowDistribution>
+	# The command you run                      # what it expands to
+	funittest P:TYPO3.Flow:Cli                 # Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+	funittest P/TYPO3.Flow:Cli                 # Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+	funittest P:TYPO3.Flow/Cli                 # Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+	funittest P/TYPO3.Flow/Cli                 # Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+
+It would be awesome to make tab completion work with this, but, that's not done yet.
 
 Directly accessing TYPO3 Flow Packages using cd
 -----------------------------------------------
