@@ -1,6 +1,6 @@
-######################################
-# Section: TYPO3 Flow Autocompletion Helper
-######################################
+#############################################
+# Section: TYPO3 Flow Autocompletion Helper #
+#############################################
 
 #
 # the ZSH autocompletion function for TYPO3 Flow (main entry point)
@@ -28,12 +28,12 @@ compdef _flow flow
 
 #
 # Autocompletion function for the main commands. Is executed
-# from the root of the FLOW3 distribution.
+# from the root of the TYPO3 Flow distribution.
 #
 _flow_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow-autocompletion-maincommands ]; then
     mkdir -p Data/Temporary/Development/
-    ./flow help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
+    ./flow help | grep  "^[* ][ ][[:alnum:][:space:]]" | php $ZSH/custom/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
   fi
 
   # fills up cmdlist variable
@@ -54,14 +54,14 @@ _flow_subcommand() {
   compadd -x "`cat Data/Temporary/Development/.flow-autocompletion-command-$cmd`"
 }
 
-######################################
-# Section: Internal Utility Functions
-######################################
+#######################################
+# Section: Internal Utility Functions #
+#######################################
 
 #
-# Returns 0 if INSIDE a FLOW3 distribution, and 1 otherwise.
+# Returns 0 if INSIDE a TYPO3 Flow distribution, and 1 otherwise.
 # can be used like:
-#     if _flow3_is_inside_base_distribution; then ... ;fi
+#     if _flow_is_inside_base_distribution; then ... ;fi
 #
 _flow_is_inside_base_distribution() {
   local startDirectory=`pwd`
@@ -77,18 +77,70 @@ _flow_is_inside_base_distribution() {
   return 0
 }
 
-######################################
-# Section: FLOW3 Command from subdir
-######################################
+#
+# Get the list of packages directories.
+# This expects to be run from the flow base distribution's root directory
+# Includes trailing slash.
+#
+_flow_list_packages() {
+  local flowBaseDir=$1
+  #composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages
+  find $flowBaseDir -name "composer.json" -type f | grep -v "Packages/Libraries" | grep "Packages" | sed -e "s_composer.json__g"
+}
 
 #
-# Implementation of a FLOW3 command which can be executed inside
-# sub directories of the FLOW3 distribution; just finds the base
-# distribution directory and calls the appropriate FLOW3 command
+# Expands a package directory for in all parameters starting with $3.
+# $1 defines the a folder within the package directory that should be
+# included after the package directory, but before the rest. For example:
+#      var=$(_flow_package_dir_expansion $flowBaseDir Tests/Unit P/TYPO3.Flow/Cli)
+#      var=$(_flow_package_dir_expansion $flowBaseDir Tests/Unit P:TYPO3.Flow:Cli)
+#        echoes <flowBaseDir>/Packages/Framework/TYPO3.Flow/Tests/Unit/Cli
+#      var=$(_flow_package_dir_expansion $flowBaseDir Tests/Unit P:TYPO3.Flow)
+#        echoes <flowBaseDir>/Packages/Framework/TYPO3.Flow/Tests/Unit
+#
+_flow_package_dir_expansion() {
+  local expandedDirs
+  local packageDir
+  local flowBaseDir=${1%%/} #remove trailing slash(es)
+  local dirInPkg=${2##/}    #remove initial slash(es)
+  dirInPkg=${dirInPkg%%/}   #remove trailing slash(es)
+  shift
+  shift
+
+  for entry in $@; do
+    if [[ ${entry:0:2} == "P/" ]] || [[ ${entry:0:2} == "P:" ]]; then
+      # Assume that the package key does not have / or : in it.
+
+      entry=${entry:2} # remove "P/" or "P:"
+      if [[ ! $entry == *:* ]]; then
+        entry=${entry/\//:} # replace first / with :
+        if [[ ! $entry == *:* ]]; then
+          entry=${entry}: # must be only a package name
+        fi
+      fi
+      # now everything before the first : is the name of the package.
+      packageDir=$(_flow_list_packages $flowBaseDir | grep -i /${entry%%:*}/)
+
+      # packageDir includes a trailing slash! dirInPkg doesn't.
+      entry=${packageDir}${dirInPkg}/${entry##*:}
+    fi
+    expandedDirs+=" $entry"
+  done
+
+  echo ${expandedDirs# } #remove initial space
+}
+
+###########################################
+# Section: TYPO3 Flow Command from subdir #
+###########################################
+
+#
+# Implementation of a TYPO3 Flow command which can be executed inside
+# sub directories of the TYPO3 Flow distribution; just finds the base
+# distribution directory and calls the appropriate TYPO3 Flow command
 #
 flow() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -101,16 +153,15 @@ flow() {
   cd $startDirectory
 }
 
-######################################
-# Section: Unit / Functional Test
-######################################
+###################################
+# Section: Unit / Functional Test #
+###################################
 
 #
 # Implementation of a command to run unit tests
 #
 funittest() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -122,19 +173,19 @@ funittest() {
   local flowBaseDir=`pwd`
   local phpunit="phpunit"
   if [ -f bin/phpunit ]
-  	local phpunit="$flowBaseDir/bin/phpunit"
+    local phpunit="$flowBaseDir/bin/phpunit"
 
   cd $startDirectory
 
-  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $@
+  tests=$(_flow_package_dir_expansion $flowBaseDir "Tests/Unit" $@)
+  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $tests
 }
 
 #
 # Implementation of a command to run functional tests
 #
 ffunctionaltest() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -146,16 +197,17 @@ ffunctionaltest() {
   local flowBaseDir=`pwd`
   local phpunit="phpunit"
   if [ -f bin/phpunit ]
-  	local phpunit="$flowBaseDir/bin/phpunit"
+    local phpunit="$flowBaseDir/bin/phpunit"
 
   cd $startDirectory
 
-  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
+  tests=$(_flow_package_dir_expansion $flowBaseDir "Tests/Functional" $@)
+  $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $tests
 }
 
-######################################
-# Section: Behat (Behavioral) Tests
-######################################
+#####################################
+# Section: Behat (Behavioral) Tests #
+#####################################
 fbehattest() {
   if _flow_is_inside_base_distribution; then
   else
@@ -180,18 +232,20 @@ fbehattest() {
 
   cd $startDirectory
 
-  $flowBaseDir/bin/behat -c $@
+  # bin/behat -c Packages/Application/My.Package/Tests/Behavior/behat.yml
+	# P:TYPO3.Flow:behat.yml.dist
+  tests=$(_flow_package_dir_expansion $flowBaseDir "Tests/Behavior" $@)
+  $flowBaseDir/bin/behat -c $tests
 }
 
 
 
-######################################
-# Section: f-package-foreach
-######################################
+##############################
+# Section: f-package-foreach #
+##############################
 
 f-package-foreach() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -205,7 +259,8 @@ f-package-foreach() {
 
   command=$*
   baseDirectory=`pwd`
-  for directory in `composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
+  #for directory in `composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
+  for directory in $(_flow_list_packages $flowBaseDir)
   do
     cd "$directory"
 
@@ -222,162 +277,12 @@ f-package-foreach() {
 
 }
 
-##################################################################################################
-##################################################################################################
-
-
-
-######################################
-# Section: FLOW3 Autocompletion Helper (deprecated)
-######################################
+########################################################
+# Section: TYPO3 Flow Distribution maintenance helpers #
+########################################################
 
 #
-# the ZSH autocompletion function for FLOW3 (main entry point)
-#
-_flow3() {
-  if _flow3_is_inside_base_distribution; then
-
-    local startDirectory=`pwd`
-    while [ ! -f flow3 ]; do
-      cd ..
-    done
-    if (( $CURRENT > 2 )); then
-      CURRENT=$CURRENT-1
-      local cmd=${words[2]}
-      shift words
-
-      _flow3_subcommand
-    else
-      _flow3_main_commands
-    fi
-    cd $startDirectory
-  fi
-}
-compdef _flow3 flow3
-
-#
-# Autocompletion function for the main commands. Is executed
-# from the root of the FLOW3 distribution.
-#
-_flow3_main_commands() {
-  if [ ! -f Data/Temporary/Development/.flow3-autocompletion-maincommands ]; then
-    mkdir -p Data/Temporary/Development/
-    ./flow3 help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow3-autocompletion-maincommands
-  fi
-
-  # fills up cmdlist variable
-  eval "`cat Data/Temporary/Development/.flow3-autocompletion-maincommands`"
-
-  _describe 'flow3 command' cmdlist
-}
-
-#
-# Autocompletion function for a single commands. Is executed
-# from the root of the FLOW3 distribution.
-#
-_flow3_subcommand() {
-  if [ ! -f Data/Temporary/Development/.flow3-autocompletion-command-$cmd ]; then
-    ./flow3 help $cmd > Data/Temporary/Development/.flow3-autocompletion-command-$cmd
-  fi
-
-  compadd -x "`cat Data/Temporary/Development/.flow3-autocompletion-command-$cmd`"
-}
-
-######################################
-# Section: Internal Utility Functions
-######################################
-
-#
-# Returns 0 if INSIDE a FLOW3 distribution, and 1 otherwise.
-# can be used like:
-#     if _flow3_is_inside_base_distribution; then ... ;fi
-#
-_flow3_is_inside_base_distribution() {
-  local startDirectory=`pwd`
-  while [[ ! -f flow3 ]]; do
-
-    if [[ `pwd` == "/" ]]; then
-      cd $startDirectory
-      return 1
-    fi
-    cd ..
-  done
-  cd $startDirectory
-  return 0
-}
-
-######################################
-# Section: FLOW3 Command from subdir
-######################################
-
-#
-# Implementation of a FLOW3 command which can be executed inside
-# sub directories of the FLOW3 distribution; just finds the base
-# distribution directory and calls the appropriate FLOW3 command
-#
-flow3() {
-  if _flow3_is_inside_base_distribution; then
-  else
-    echo "ERROR: FLOW3 not found inside a parent of current directory"
-    return 1
-  fi
-
-  local startDirectory=`pwd`
-  while [ ! -f flow3 ]; do
-    cd ..
-  done
-  ./flow3 $@
-  cd $startDirectory
-}
-
-######################################
-# Section: Unit / Functional Test
-######################################
-
-#
-# Implementation of a command to run unit tests
-#
-f3unittest() {
-  if _flow3_is_inside_base_distribution; then
-  else
-    echo "ERROR: FLOW3 not found inside a parent of current directory"
-    return 1
-  fi
-
-  local startDirectory=`pwd`
-  while [ ! -f flow3 ]; do
-    cd ..
-  done
-  local flow3BaseDir=`pwd`
-  cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/UnitTests.xml --colors $@
-}
-
-#
-# Implementation of a command to run functional tests
-#
-f3functionaltest() {
-  if _flow3_is_inside_base_distribution; then
-  else
-    echo "ERROR: FLOW3 not found inside a parent of current directory"
-    return 1
-  fi
-
-  local startDirectory=`pwd`
-  while [ ! -f flow3 ]; do
-    cd ..
-  done
-  local flow3BaseDir=`pwd`
-  cd $startDirectory
-  phpunit -c $flow3BaseDir/Build/Common/PhpUnit/FunctionalTests.xml --colors $@
-}
-
-######################################
-# Section: FLOW3 Distribution maintenance helpers
-######################################
-
-#
-# Utility to choose the current FLOW3 distribution. Sets cdpath correctly,
+# Utility to choose the current TYPO3 Flow distribution. Sets cdpath correctly,
 # such that packages inside a distribution are found automatically.
 #
 f-set-distribution() {
@@ -392,7 +297,7 @@ f-set-distribution() {
   done
   echo -n "Your Choice: "
   read choice
-  echo $flow_distribution_paths[$choice] > $ZSH/custom/plugins/flow3/f-environment-choice.txt
+  echo $flow_distribution_paths[$choice] > $ZSH/custom/plugins/flow/f-environment-choice.txt
 
   # Now, after updating f-environment-choice.txt, send USR2 signal to
   # all running ZSH instances such that they reload
@@ -414,8 +319,7 @@ TRAPUSR2() {
 # Internal helper to update cdpath
 #
 _f-update-distribution-path() {
-  if [ -f $ZSH/custom/plugins/flow3/f-environment-choice.txt ]; then
-  else
+  if [ ! -f $ZSH/custom/plugins/flow/f-environment-choice.txt ]; then
     return
   fi
   local fBasePath=`cat $ZSH/custom/plugins/flow/f-environment-choice.txt`
@@ -428,13 +332,12 @@ _f-update-distribution-path() {
 # This helper needs to be run initially to set the CDPath correctly
 _f-update-distribution-path
 
-######################################
-# Section: Open FLOW3 Log in iTerm 2
-######################################
+###########################################
+# Section: Open TYPO3 Flow Log in iTerm 2 #
+###########################################
 
 flogs() {
-  if _flow_is_inside_base_distribution; then
-  else
+  if ! _flow_is_inside_base_distribution; then
     echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
     return 1
   fi
@@ -446,6 +349,6 @@ flogs() {
   local flowBaseDir=`pwd`
   cd $startDirectory
 
-  flow3_path="$flowBaseDir" osascript $ZSH/custom/plugins/flow3/flow3log.applescript
+  flow_path="$flowBaseDir" osascript $ZSH/custom/plugins/flow/flowlog.applescript
 
 }
