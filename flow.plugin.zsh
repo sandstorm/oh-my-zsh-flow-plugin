@@ -33,7 +33,7 @@ compdef _flow flow
 _flow_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow-autocompletion-maincommands ]; then
     mkdir -p Data/Temporary/Development/
-    ./flow help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
+    ./flow help | grep  "^[* ][ ]" | php $ZSH_CUSTOM/plugins/flow/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow-autocompletion-maincommands
   fi
 
   # fills up cmdlist variable
@@ -262,7 +262,7 @@ compdef _flow3 flow3
 _flow3_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow3-autocompletion-maincommands ]; then
     mkdir -p Data/Temporary/Development/
-    ./flow3 help | grep  "^[* ][ ]" | php $ZSH/custom/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow3-autocompletion-maincommands
+    ./flow3 help | grep  "^[* ][ ]" | php $ZSH_CUSTOM/plugins/flow3/helper-postprocess-cmdlist.php > Data/Temporary/Development/.flow3-autocompletion-maincommands
   fi
 
   # fills up cmdlist variable
@@ -392,7 +392,7 @@ f-set-distribution() {
   done
   echo -n "Your Choice: "
   read choice
-  echo $flow_distribution_paths[$choice] > $ZSH/custom/plugins/flow3/f-environment-choice.txt
+  echo $flow_distribution_paths[$choice] > $ZSH_CUSTOM/plugins/flow3/f-environment-choice.txt
 
   # Now, after updating f-environment-choice.txt, send USR2 signal to
   # all running ZSH instances such that they reload
@@ -414,11 +414,11 @@ TRAPUSR2() {
 # Internal helper to update cdpath
 #
 _f-update-distribution-path() {
-  if [ -f $ZSH/custom/plugins/flow3/f-environment-choice.txt ]; then
+  if [ -f $ZSH_CUSTOM/plugins/flow3/f-environment-choice.txt ]; then
   else
     return
   fi
-  local fBasePath=`cat $ZSH/custom/plugins/flow/f-environment-choice.txt`
+  local fBasePath=`cat $ZSH_CUSTOM/plugins/flow/f-environment-choice.txt`
 
   # we need to add "." to the current CDPath, else Composer etc breaks...
   cdpath=(. $fBasePath/Packages/Framework/ $fBasePath/Packages/Application/ $fBasePath/Packages/Sites/)
@@ -446,6 +446,6 @@ flogs() {
   local flowBaseDir=`pwd`
   cd $startDirectory
 
-  flow3_path="$flowBaseDir" osascript $ZSH/custom/plugins/flow3/flow3log.applescript
+  flow3_path="$flowBaseDir" osascript $ZSH_CUSTOM/plugins/flow3/flow3log.applescript
 
 }
