@@ -2,9 +2,6 @@
 
 set flow_path to system attribute "flow_path"
 
-
-launch "iTerm"
-
 tell application "iTerm"
 	activate
 
