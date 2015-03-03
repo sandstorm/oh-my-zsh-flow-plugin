@@ -205,7 +205,7 @@ f-package-foreach() {
 
   command=$*
   baseDirectory=`pwd`
-  for directory in `composer status -vvv | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
+  for directory in `composer status -vvv 2>&1 | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages`
   do
     cd "$directory"
 
