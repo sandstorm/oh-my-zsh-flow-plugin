@@ -1,6 +1,7 @@
-===============================
-TYPO3 Flow Helper for Oh-my-ZSH
-===============================
+===================================
+Flow Framework Helper for Oh-my-ZSH
+===================================
+
 Copyright 2012-2013 Sebastian Kurfürst, sandstorm|media
 
 Installation
@@ -19,19 +20,19 @@ Afterwards, add the ``flow`` plugin to your oh-my-zsh config list.
 Usage
 =====
 
-Here, the features of the TYPO3 Flow helper are explained:
+Here, the features of the Flow helper are explained:
 
 flow Command
 ------------
 
-The Flow plugin makes the ``flow`` command available *inside every subdirectory* of the TYPO3 Flow
+The Flow plugin makes the ``flow`` command available *inside every subdirectory* of the Flow
 distribution. Thus, you can use ``flow`` instead of ``./flow``, and you do not have to be in
 the base directory of your distribution for it. Example::
 
 	cd <YourFlowDistribution>
 	./flow help    # this is the command you know already ;-)
 	flow help      # shortcut to the one above, saves you two keystrokes -- yeah!
-	cd Packages/Framework/TYPO3.Flow
+	cd Packages/Application/Acme.Demo
 	flow help      # now, that's actually quite cool, as the system will find the correct
 	                # flow CLI executable by traversing the parent directories
 
@@ -47,7 +48,7 @@ complete it. When autocompleting a fully written command, the full command refer
 	flow <TAB>                            # list all currently installed commands with a short description
 	flow k<TAB>                           # autocompletes to "kickstart:"
 	flow kickstart:<TAB>                  # show all commands starting with "kickstart:"
-	flow kickstart:actioncontroller <TAB> # show the full help for kickstart:actioncontroller from TYPO3 Flow
+	flow kickstart:actioncontroller <TAB> # show the full help for kickstart:actioncontroller from Flow
 
 Unit and Functional Testing
 ---------------------------
@@ -55,16 +56,16 @@ Unit and Functional Testing
 In order to save a few keystrokes when typing ``phpunit -c ..../Build/Common/PhpUnit/UnitTests.xml path/to/MyTest.php``,
 there are two commands available: ``ffunctionaltest`` and ``funittest``.
 
-They, as well, can be called inside every subfolder of the FLOW3 distribution::
+They, as well, can be called inside every subfolder of the Flow distribution::
 
 	cd <YourFlowDistribution>
-	funittest Packages/Framework/TYPO3.Flow/Tests/Unit       # Runs all unit tests; lot of typing necessary
-	cd Packages/Framework/TYPO3.Flow/
+	funittest Packages/Application/Acme.Demo/Tests/Unit       # Runs all unit tests; lot of typing necessary
+	cd Packages/Application/Acme.Demo/
 	funittest Tests/Unit                                      # runs all unit tests, but with a lot less typing ;-)
 	ffunctionaltest Tests/Functional                          # runs the functional tests
 
-Directly accessing TYPO3 Flow Packages using cd
------------------------------------------------
+Directly accessing Flow Packages using cd
+-----------------------------------------
 
 Often, I find myself working for longer timespans in a particular Flow distribution, jumping between
 the different packages of the distribution very often. In order to save some keystrokes, I found the "cdpath"
@@ -75,13 +76,13 @@ variable in ZSH, which can be defined like::
 Then, you can directly ``cd`` into *any subdirectory* of the directories in ``cdpath``.
 This enables you to directly jump to all packages inside the distribution::
 
-	cd TYPO3.Flow
+	cd Acme.Demo
 	cd SandstormMedia.Plumber
 
 In order to work with multiple distributions more easily, you should set the ``flow_distribution_paths``
 variable inside your .zshrc to the base directories of all distributions::
 
-	flow_distribution_paths=(/Volumes/data/htdocs/FlowBase /Volumes/data/htdocs/FlowTypo3Org /Volumes/data/htdocs/PackageRepositoryDistribution /Volumes/data/htdocs/SandstormMediaFlowDistribution)
+	flow_distribution_paths=(/Volumes/data/htdocs/FlowBase /Volumes/data/htdocs/PackageRepositoryDistribution /Volumes/data/htdocs/SandstormMediaFlowDistribution)
 
 Then, you can use the ``f-set-distribution`` command to choose which distribution shall be *active*
 right now.
@@ -94,7 +95,7 @@ f-package-foreach
 
 Often, I need to run some command in all packages. Before using composer,
 this was easy using ``git submodule foreach``. This is why we install
-``f-package-foreach`` which loops through all TYPO3 Flow packages; skipping
+``f-package-foreach`` which loops through all Flow packages; skipping
 all ``Packages/Libraries``.
 
 Usage:
@@ -115,7 +116,7 @@ Future Ideas
 
 If you have suggestions on how to improve this software, pull requests etc are highly appreciated :-)
 
-Or you can contact me directly as well, I usually hang out as ``skurfuerst`` in ``irc.freenode.net #typo3-flow``.
+Or you can contact me directly as well, I usually hang out as ``skurfuerst`` in ``slack.neos.io``.
 
 License
 =======

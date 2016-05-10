@@ -1,9 +1,9 @@
-######################################
-# Section: TYPO3 Flow Autocompletion Helper
-######################################
+#####################################
+# Section: Flow Autocompletion Helper
+#####################################
 
 #
-# the ZSH autocompletion function for TYPO3 Flow (main entry point)
+# the ZSH autocompletion function for Flow (main entry point)
 #
 _flow() {
   if _flow_is_inside_base_distribution; then
@@ -28,7 +28,7 @@ compdef _flow flow
 
 #
 # Autocompletion function for the main commands. Is executed
-# from the root of the FLOW3 distribution.
+# from the root of the Flow distribution.
 #
 _flow_main_commands() {
   if [ ! -f Data/Temporary/Development/.flow-autocompletion-maincommands ]; then
@@ -44,7 +44,7 @@ _flow_main_commands() {
 
 #
 # Autocompletion function for a single commands. Is executed
-# from the root of the TYPO3 Flow distribution.
+# from the root of the Flow distribution.
 #
 _flow_subcommand() {
   if [ ! -f Data/Temporary/Development/.flow-autocompletion-command-$cmd ]; then
@@ -89,7 +89,7 @@ _flow_is_inside_base_distribution() {
 flow() {
   if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    echo "ERROR: Flow not found inside a parent of current directory"
     return 1
   fi
 
@@ -111,7 +111,7 @@ flow() {
 funittest() {
   if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    echo "ERROR: Flow not found inside a parent of current directory"
     return 1
   fi
 
@@ -135,7 +135,7 @@ funittest() {
 ffunctionaltest() {
   if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    echo "ERROR: Flow not found inside a parent of current directory"
     return 1
   fi
 
@@ -159,7 +159,7 @@ ffunctionaltest() {
 fbehattest() {
   if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    echo "ERROR: Flow not found inside a parent of current directory"
     return 1
   fi
 
@@ -192,7 +192,7 @@ fbehattest() {
 f-package-foreach() {
   if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    echo "ERROR: Flow not found inside a parent of current directory"
     return 1
   fi
 
@@ -223,7 +223,6 @@ f-package-foreach() {
 }
 
 
-
 ######################################
 # Section: Flow Distribution maintenance helpers
 ######################################
@@ -233,7 +232,7 @@ f-package-foreach() {
 # such that packages inside a distribution are found automatically.
 #
 f-set-distribution() {
-  echo "Enter the TYPO3 Flow distribution path number which should be active currently!"
+  echo "Enter the Flow distribution path number which should be active currently!"
   echo "--------------------------------------------------------------------------"
   local i=1
   for thePath in $flow_distribution_paths; do
@@ -266,7 +265,7 @@ TRAPUSR2() {
 # Internal helper to update cdpath
 #
 _f-update-distribution-path() {
-  if [ -f $ZSH_CUSTOM/plugins/flow3/f-environment-choice.txt ]; then
+  if [ -f $ZSH_CUSTOM/plugins/flow/f-environment-choice.txt ]; then
   else
     return
   fi
@@ -287,7 +286,7 @@ _f-update-distribution-path
 flogs() {
   if _flow_is_inside_base_distribution; then
   else
-    echo "ERROR: TYPO3 Flow not found inside a parent of current directory"
+    echo "ERROR: Flow not found inside a parent of current directory"
     return 1
   fi
 
