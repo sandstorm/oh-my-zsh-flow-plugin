@@ -2,7 +2,7 @@
 Flow Framework Helper for Oh-my-ZSH
 ===================================
 
-Copyright 2012-2013 Sebastian Kurfürst, sandstorm|media
+Copyright 2012-2016 Sebastian Kurfürst, sandstorm|media
 
 Installation
 ============
@@ -13,7 +13,7 @@ Then, install this repository inside ``custom/plugins`` of your oh-my-zsh direct
 
 	mkdir -p .oh-my-zsh/custom/plugins
 	cd .oh-my-zsh/custom/plugins
-	git clone git://github.com/sandstorm/oh-my-zsh-flow3-plugin.git flow
+	git clone git://github.com/sandstorm/oh-my-zsh-flow-plugin.git flow
 
 Afterwards, add the ``flow`` plugin to your oh-my-zsh config list.
 
@@ -35,9 +35,6 @@ the base directory of your distribution for it. Example::
 	cd Packages/Application/Acme.Demo
 	flow help      # now, that's actually quite cool, as the system will find the correct
 	                # flow CLI executable by traversing the parent directories
-
-NOTE: For Backwards Compatibility, the "flow3" command is still supported for
-pre-2.0 instances.
 
 Tab Completion
 --------------
@@ -116,7 +113,7 @@ Future Ideas
 
 If you have suggestions on how to improve this software, pull requests etc are highly appreciated :-)
 
-Or you can contact me directly as well, I usually hang out as ``skurfuerst`` in ``slack.neos.io``.
+Or you can contact me directly as well, I usually hang out as ``sebastian`` in ``slack.neos.io``.
 
 License
 =======
