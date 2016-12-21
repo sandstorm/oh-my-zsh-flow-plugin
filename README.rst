@@ -34,7 +34,7 @@ the base directory of your distribution for it. Example::
 	flow help      # shortcut to the one above, saves you two keystrokes -- yeah!
 	cd Packages/Application/Acme.Demo
 	flow help      # now, that's actually quite cool, as the system will find the correct
-	                # flow CLI executable by traversing the parent directories
+	               # flow CLI executable by traversing the parent directories
 
 Tab Completion
 --------------
