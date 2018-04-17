@@ -2,6 +2,10 @@
 # Section: Flow Autocompletion Helper
 #####################################
 
+
+# Global cd alias for better maintainability
+alias cd='builtin cd'
+
 #
 # the ZSH autocompletion function for Flow (main entry point)
 #
