@@ -2,6 +2,10 @@
 # Section: Flow Autocompletion Helper
 #####################################
 
+
+# Global cd alias for better maintainability
+alias cd='builtin cd'
+
 #
 # the ZSH autocompletion function for Flow (main entry point)
 #
@@ -10,7 +14,7 @@ _flow() {
 
     local startDirectory=`pwd`
     while [ ! -f flow ]; do
-      builtin cd ..
+      cd ..
     done
     if (( $CURRENT > 2 )); then
       CURRENT=$CURRENT-1
@@ -21,7 +25,7 @@ _flow() {
     else
       _flow_main_commands
     fi
-    builtin cd $startDirectory
+    cd $startDirectory
   fi
 }
 compdef _flow flow
@@ -68,12 +72,12 @@ _flow_is_inside_base_distribution() {
   while [[ ! -f flow ]]; do
 
     if [[ `pwd` == "/" ]]; then
-      builtin cd $startDirectory
+      cd $startDirectory
       return 1
     fi
-    builtin cd ..
+    cd ..
   done
-  builtin cd $startDirectory
+  cd $startDirectory
   return 0
 }
 
@@ -95,10 +99,10 @@ flow() {
 
   local startDirectory=`pwd`
   while [ ! -f flow ]; do
-    builtin cd ..
+    cd ..
   done
   ./flow $@
-  builtin cd $startDirectory
+  cd $startDirectory
 }
 
 ######################################
@@ -117,14 +121,14 @@ funittest() {
 
   local startDirectory=`pwd`
   while [ ! -f flow ]; do
-    builtin cd ..
+    cd ..
   done
   local flowBaseDir=`pwd`
   local phpunit="phpunit"
   if [ -f bin/phpunit ]
   	local phpunit="$flowBaseDir/bin/phpunit"
 
-  builtin cd $startDirectory
+  cd $startDirectory
 
   $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/UnitTests.xml --colors $@
 }
@@ -141,14 +145,14 @@ ffunctionaltest() {
 
   local startDirectory=`pwd`
   while [ ! -f flow ]; do
-    builtin cd ..
+    cd ..
   done
   local flowBaseDir=`pwd`
   local phpunit="phpunit"
   if [ -f bin/phpunit ]
   	local phpunit="$flowBaseDir/bin/phpunit"
 
-  builtin cd $startDirectory
+  cd $startDirectory
 
   $phpunit -c $flowBaseDir/Build/BuildEssentials/PhpUnit/FunctionalTests.xml --colors $@
 }
@@ -165,7 +169,7 @@ fbehattest() {
 
   local startDirectory=`pwd`
   while [ ! -f flow ]; do
-    builtin cd ..
+    cd ..
   done
   local flowBaseDir=`pwd`
 
@@ -178,7 +182,7 @@ fbehattest() {
     ./flow behat:setup
   fi
 
-  builtin cd $startDirectory
+  cd $startDirectory
 
   $flowBaseDir/bin/behat -c $@
 }
@@ -198,7 +202,7 @@ f-package-foreach() {
 
   local startDirectory=`pwd`
   while [ ! -f flow ]; do
-    builtin cd ..
+    cd ..
   done
 
   local flowBaseDir=`pwd`
@@ -207,7 +211,7 @@ f-package-foreach() {
   baseDirectory=`pwd`
   for directory in `composer status -vvv 2>&1 | grep "Executing command" | cut -d'(' -f2 | cut -d')' -f1 | grep -v "Packages/Libraries" | grep Packages | uniq`
   do
-    builtin cd "$directory"
+    cd "$directory"
 
     echo ''
     echo '--------------------------------------------'
@@ -215,10 +219,10 @@ f-package-foreach() {
     echo '--------------------------------------------'
     eval $command
 
-    builtin cd "$baseDirectory"
+    cd "$baseDirectory"
   done
 
-  builtin cd $startDirectory
+  cd $startDirectory
 
 }
 
@@ -292,10 +296,10 @@ flogs() {
 
   local startDirectory=`pwd`
   while [ ! -f flow ]; do
-    builtin cd ..
+    cd ..
   done
   local flowBaseDir=`pwd`
-  builtin cd $startDirectory
+  cd $startDirectory
 
   flow_path="$flowBaseDir" osascript $ZSH_CUSTOM/plugins/flow/flowlog.applescript
 
