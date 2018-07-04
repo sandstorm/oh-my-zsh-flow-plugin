@@ -7,6 +7,9 @@ Copyright 2012-2016 Sebastian Kurfürst, sandstorm|media
 Installation
 ============
 
+oh-my-zsh
+---------
+
 First, you need to install oh-my-zsh from https://github.com/robbyrussell/oh-my-zsh.git
 
 Then, install this repository inside ``custom/plugins`` of your oh-my-zsh directory::
@@ -16,6 +19,16 @@ Then, install this repository inside ``custom/plugins`` of your oh-my-zsh direct
 	git clone git://github.com/sandstorm/oh-my-zsh-flow-plugin.git flow
 
 Afterwards, add the ``flow`` plugin to your oh-my-zsh config list.
+
+antigen
+-------
+
+If you're using the Antigen framework (https://github.com/zsh-users/antigen), add ``antigen bundle sandstorm/oh-my-zsh-flow-plugin`` to your ``.zshrc`` Antigen will automatically clone and install the plugin the next time you open a new terminal session.
+
+zgen
+----
+
+If you're using the zgen framework (https://github.com/tarjoilija/zgen), add ``zgen load sandstorm/oh-my-zsh-flow-plugin`` to your ``.zshrc`` with your other ``zgen load`` statements. Zgen will automatically clone and install the plugin the next time you run ``zgen save``.
 
 Usage
 =====
