@@ -98,7 +98,9 @@ flow() {
     builtin cd ..
   done
   ./flow $@
+  local flowExitCode=$?
   builtin cd $startDirectory
+  return $flowExitCode
 }
 
 ######################################
