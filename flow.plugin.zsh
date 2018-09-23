@@ -274,7 +274,7 @@ _f-update-distribution-path() {
   local fBasePath=`cat $ZSH_CUSTOM/plugins/flow/f-environment-choice.txt`
 
   # we need to add "." to the current CDPath, else Composer etc breaks...
-  cdpath=(. $fBasePath/Packages/Framework/ $fBasePath/Packages/Application/ $fBasePath/Packages/Sites/)
+  cdpath=(. $fBasePath/Packages/Framework/ $fBasePath/Packages/Neos/ $fBasePath/Packages/Application/ $fBasePath/Packages/Sites/)
   export CDPATH
 }
 
