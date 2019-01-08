@@ -2,7 +2,7 @@
 Flow Framework Helper for Oh-my-ZSH
 ===================================
 
-Copyright 2012-2016 Sebastian Kurfürst, sandstorm|media
+Copyright 2012-2019 Sebastian Kurfürst, sandstorm|media
 
 Installation
 ============
