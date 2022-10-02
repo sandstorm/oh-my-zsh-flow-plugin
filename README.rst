@@ -25,10 +25,10 @@ antigen
 
 If you're using the Antigen framework (https://github.com/zsh-users/antigen), add ``antigen bundle sandstorm/oh-my-zsh-flow-plugin`` to your ``.zshrc`` Antigen will automatically clone and install the plugin the next time you open a new terminal session.
 
-zgen
-----
+zgenom
+------
 
-If you're using the zgen framework (https://github.com/tarjoilija/zgen), add ``zgen load sandstorm/oh-my-zsh-flow-plugin`` to your ``.zshrc`` with your other ``zgen load`` statements. Zgen will automatically clone and install the plugin the next time you run ``zgen save``.
+If you're using the zgen framework (https://github.com/jandamm/zgenom), add ``zgenom load sandstorm/oh-my-zsh-flow-plugin`` to your ``.zshrc`` with your other ``zgenom load`` and/or ``zgen load`` statements. Zgenom will automatically clone and install the plugin the next time you run ``zgenom save``.
 
 Usage
 =====
