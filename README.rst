@@ -16,7 +16,7 @@ Then, install this repository inside ``custom/plugins`` of your oh-my-zsh direct
 
 	mkdir -p .oh-my-zsh/custom/plugins
 	cd .oh-my-zsh/custom/plugins
-	git clone git://github.com/sandstorm/oh-my-zsh-flow-plugin.git flow
+	git clone git@github.com:sandstorm/oh-my-zsh-flow-plugin.git flow
 
 Afterwards, add the ``flow`` plugin to your oh-my-zsh config list.
 
